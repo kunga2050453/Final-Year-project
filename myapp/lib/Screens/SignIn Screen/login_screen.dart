@@ -1,13 +1,16 @@
-import 'package:myapp/Screens/Home Screen/home_screen.dart';
-import 'package:myapp/Screens/Home Screen/home.dart';
 import 'package:myapp/screens/Signup Screen/registration_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-import '../Home Screen/home.dart';
+import 'package:myapp/Screens/Controller/controller.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../Activities/Home Screen/home_screen.dart';
+import '../../Services/google_signin.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({key}) : super(key: key);
@@ -19,6 +22,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   // form key
   final _formKey = GlobalKey<FormState>();
+  final controller = Get.put(LoginController());
 
   // editing controller
   final TextEditingController emailController = new TextEditingController();
@@ -29,6 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // string for displaying the error Message
   String? errorMessage;
+
+  var icon;
+  var _passwordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +60,13 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.mail),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.mail),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Email",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-        )
-    );
+        ));
 
     //password field
     final passwordField = TextFormField(
@@ -81,33 +87,47 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.vpn_key),
-          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          prefixIcon: const Icon(Icons.vpn_key),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "Password",
+          //suffixIcon: IconButton(onPressed: (){},icon: icon.visibility),
+          // suffixIcon: IconButton(
+          //   icon: Icon(
+          //     // Based on passwordVisible state choose the icon
+          //     _passwordVisible
+          //         ? Icons.visibility
+          //         : Icons.visibility_off,
+          //     color: Theme.of(context).primaryColorDark,
+          //   ),
+          //   onPressed: () {
+          //     // Update the state i.e. toogle the state of passwordVisible variable
+          //     setState(() {
+          //       _passwordVisible = !_passwordVisible;
+          //     });
+          //   },
+          // ),
+
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-        )
-    );
-
+        ));
 
     final loginButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
       color: Colors.blueAccent,
       child: MaterialButton(
-          padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+          padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
             signIn(emailController.text, passwordController.text);
           },
-          child: Text(
+          child: const Text(
             "Login",
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          )
-      ),
+          )),
     );
 
     final googleButton = Material(
@@ -116,28 +136,16 @@ class _LoginScreenState extends State<LoginScreen> {
       color: Colors.blueAccent,
       //margin: const EdgeInsets.only(top: 10.0),
       child: FloatingActionButton.extended(
-        onPressed: () => signInWithGoogle(),
+        onPressed: () => signInWithGoogle(context),
         icon: Image.asset(
           "assets/images/googlelogo.jpg",
-          height: 50.0,
-          width: 32.0,
+          height: 35.0,
+          width: 125.0,
         ),
-        label: Text('Sign in with Google'),
+        label: const Text('Sign in with Google'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
       ),
-      // child: MaterialButton(
-      //     padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-      //     minWidth: MediaQuery.of(context).size.width,
-      //     onPressed: () {
-      //       signIn(emailController.text, passwordController.text);
-      //     },
-      //     child: Text(
-      //       "Login",
-      //       textAlign: TextAlign.center,
-      //       style: TextStyle(
-      //           fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-      //     )),
     );
 
     return Scaffold(
@@ -160,36 +168,36 @@ class _LoginScreenState extends State<LoginScreen> {
                           "assets/images/logo.png",
                           fit: BoxFit.contain,
                         )),
-                    SizedBox(height: 45),
+                    const SizedBox(height: 45),
                     emailField,
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                     passwordField,
-                    SizedBox(height: 35),
+                    const SizedBox(height: 35),
                     loginButton,
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
+                    googleButton,
+                    const SizedBox(height: 15),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Don't have an account? "),
+                          const Text("Don't have an account? "),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          RegistrationScreen()));
+                                          const RegistrationScreen()));
                             },
-                            child: Text(
+                            child: const Text(
                               "SignUp",
                               style: TextStyle(
                                   color: Colors.blue,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
-                          )
+                          ),
                         ]),
-                    googleButton,
-                    SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -200,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // login function
+// login function
   void signIn(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -208,9 +216,13 @@ class _LoginScreenState extends State<LoginScreen> {
             .signInWithEmailAndPassword(email: email, password: password)
             .then((uid) => {
                   Fluttertoast.showToast(msg: "Login Successful"),
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => HomeScreen(title: ""))),
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const HomeScreen(title: ""))),
                 });
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString("username", email);
+          prefs.setString("password", password);
+        });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
           case "invalid-email":
@@ -240,17 +252,4 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-}
-
-Future<UserCredential> signInWithGoogle() async {
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-  final GoogleSignInAuthentication googleAuth =
-      await googleUser!.authentication;
-
-  final OAuthCredential credential = GoogleAuthProvider.credential(
-    idToken: googleAuth.idToken,
-    accessToken: googleAuth.accessToken,
-  );
-  return await FirebaseAuth.instance.signInWithCredential(credential);
 }

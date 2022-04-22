@@ -1,12 +1,15 @@
+import 'package:myapp/CheckSession.dart';
 import 'package:myapp/Screens/Welcome Screen/welcomescreen.dart';
+
 //import 'package:myroom/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'Services/AdvertisementService.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   runApp(MyApp());
 }
 
@@ -20,7 +23,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(title: ''),
+      home: CheckSessionScreen(),
+      //home: WelcomePage(title: '',),
     );
   }
 }

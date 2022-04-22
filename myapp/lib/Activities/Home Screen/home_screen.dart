@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/Screens/SignIn%20Screen/login_screen.dart';
-import 'package:myapp/Screens/SignUp%20Screen/registration_screen.dart';
 import 'package:lottie/lottie.dart';
 
+import '../Advertisement/add_product.dart';
+import '../Drawer/appDrawer.dart';
+import 'home.dart';
 
-class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key, required String title}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key, required String title}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<WelcomePage> {
+class _HomePageState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    return const Home();
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
-        title: Text('Welcome to Room Finder'),
+        title: const Text('Welcome to Room Finder'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -26,41 +29,42 @@ class _HomePageState extends State<WelcomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Lottie.asset('assets/json/search.json'),
+                Container(
+                  margin: const EdgeInsets.all(10.0),
+                  width: double.infinity,
+                  child: FlatButton(
+                    child: const Text(
+                      'SEARCH RESIDENCE',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (_) => const Home()));
+                    },
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(30.0)),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10.0),
+                  width: double.infinity,
+                  child: FlatButton(
+                    child: const Text(
+                      'ADVERTISE RESIDENCE',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => Advertise(() {})));
+                    },
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(30.0)),
+                ),
                 Lottie.asset('assets/json/advertise.json'),
-                Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  child: FlatButton(
-                    child: Text(
-                      'Log In',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => LoginScreen()));
-                    },
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(30.0)),
-                ),
-                Container(
-                  margin: EdgeInsets.all(10.0),
-                  width: double.infinity,
-                  child: FlatButton(
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => RegistrationScreen()));
-                    },
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(30.0)),
-                ),
               ],
             ),
           ),
@@ -69,4 +73,3 @@ class _HomePageState extends State<WelcomePage> {
     );
   }
 }
-
